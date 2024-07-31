@@ -79,7 +79,7 @@ def send_email(message):
     print(f"Sending {message} to Logic app")
     try:
         response = requests.post(
-            LOGICAPP_URL,
+            url=LOGICAPP_URL,
             json={
                 "password": message,
                 "date": datetime.date.today().strftime("%B %d, %Y"),
@@ -96,7 +96,7 @@ def connect_to_ise(url):
     print("Checking connection to ISE")
     try:
         response = requests.get(
-            url,
+            url=url,
             auth=HTTPBasicAuth(USERNAME, PASSWORD),
             headers=HEADERS,
             verify=False,
@@ -110,9 +110,9 @@ def connect_to_ise(url):
 
 def change_password(url, payload):
     try:
-        return 200
+        # return 200
         response = requests.put(
-            url,
+            url=url,
             auth=HTTPBasicAuth(USERNAME, PASSWORD),
             headers=HEADERS,
             json=payload,
