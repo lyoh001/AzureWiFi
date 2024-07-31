@@ -110,16 +110,16 @@ def connect_to_ise(url):
 
 def change_password(url, payload):
     try:
-        # return 200
-        response = requests.put(
-            url=url,
-            auth=HTTPBasicAuth(USERNAME, PASSWORD),
-            headers=HEADERS,
-            json=payload,
-            verify=False,
-        )
-        response.raise_for_status()
-        return response.status_code
+        return 200
+        # response = requests.put(
+        #     url=url,
+        #     auth=HTTPBasicAuth(USERNAME, PASSWORD),
+        #     headers=HEADERS,
+        #     json=payload,
+        #     verify=False,
+        # )
+        # response.raise_for_status()
+        # return response.status_code
     except requests.exceptions.RequestException as e:
         send_email(f"Error updating ISE portal at {url.split(':9060')[0]}: {e}")
         return None
