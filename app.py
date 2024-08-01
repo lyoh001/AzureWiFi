@@ -1,3 +1,4 @@
+import base64
 import datetime
 import os
 import random
@@ -6,7 +7,10 @@ import string
 import subprocess
 
 import requests
-from requests.auth import HTTPBasicAuth
+
+requests.packages.urllib3.disable_warnings(
+    requests.packages.urllib3.exceptions.InsecureRequestWarning
+)
 
 DASH_LINE = "-" * 50
 USERNAME = os.getenv("WIFI_RESET_USERNAME")
@@ -14,9 +18,11 @@ PASSWORD = os.getenv("WIFI_RESET_PASSWORD")
 LOGICAPP_URL = os.getenv("LOGICAPP_URL")
 ISE_URL_TEST = os.getenv("ISE_URL_TEST")
 ISE_URLS = [os.getenv("ISE_URL_BUR"), os.getenv("ISE_URL_BAL")]
+AUTH_VALUE = base64.b64encode(f"{USERNAME}:{PASSWORD}".encode()).decode()
 HEADERS = {
     "accept": "application/json",
     "content-type": "application/json",
+    "Authorization": f"Basic {AUTH_VALUE}",
 }
 PAYLOAD_TEMPLATE = {
     "SponsoredGuestPortal": {
@@ -31,7 +37,7 @@ PAYLOAD_TEMPLATE = {
                 "allowedInterfaces": ["eth0", "bond0"],
                 "certificateGroupTag": "Guest",
                 "authenticationMethod": "97dff3f0-2230-11e6-99ab-005056bf55e0",
-                "assignedGuestTypeForEmployee": "CenITEx - Daily",
+                "assignedGuestTypeForEmployee": "CenITex - Daily",
                 "displayLang": "USEBROWSERLOCALE",
                 "fallbackLanguage": "English",
                 "alwaysUsedLanguage": "English",
@@ -46,7 +52,7 @@ PAYLOAD_TEMPLATE = {
                 "allowAlternateGuestPortal": False,
             },
             "selfRegPageSettings": {
-                "assignGuestsToGuestType": "CenITEx - Daily",
+                "assignGuestsToGuestType": "CenITex - Daily",
                 "accountValidityDuration": 5,
                 "accountValidityTimeUnits": "DAYS",
                 "requireRegistrationCode": True,
@@ -97,7 +103,6 @@ def connect_to_ise(url):
     try:
         response = requests.get(
             url=url,
-            auth=HTTPBasicAuth(USERNAME, PASSWORD),
             headers=HEADERS,
             verify=False,
         )
@@ -111,15 +116,14 @@ def connect_to_ise(url):
 def change_password(url, payload):
     try:
         return 200
-        # response = requests.put(
-        #     url=url,
-        #     auth=HTTPBasicAuth(USERNAME, PASSWORD),
-        #     headers=HEADERS,
-        #     json=payload,
-        #     verify=False,
-        # )
-        # response.raise_for_status()
-        # return response.status_code
+        response = requests.put(
+            url=url,
+            headers=HEADERS,
+            json=payload,
+            verify=False,
+        )
+        response.raise_for_status()
+        return response.status_code
     except requests.exceptions.RequestException as e:
         send_email(f"Error updating ISE portal at {url.split(':9060')[0]}: {e}")
         return None
