@@ -1,0 +1,82 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Initialize_variable": {
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "EmailBody",
+                            "type": "string"
+                        }
+                    ]
+                },
+                "runAfter": {},
+                "type": "InitializeVariable"
+            },
+            "Send_an_email_(V2)": {
+                "inputs": {
+                    "body": {
+                        "Body": "<p>@{variables('EmailBody')}</p>",
+                        "Importance": "Normal",
+                        "Subject": "Cenitex Wi-Fi Guest registration",
+                        "To": "john.lee@cenitex.vic.gov.au"
+                    },
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['office365']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "path": "/v2/Mail"
+                },
+                "runAfter": {
+                    "Set_variable": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "ApiConnection"
+            },
+            "Set_variable": {
+                "inputs": {
+                    "name": "EmailBody",
+                    "value": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>AC Guest Wi-Fi Registration Code</title>\n    <link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap\" rel=\"stylesheet\">\n    <style>\n        body {\n            font-family: 'Roboto', sans-serif;\n            background-color: #f4f7f6;\n            margin: 0;\n            padding: 20px;\n            color: #333;\n        }\n        .notification-body {\n            max-width: 600px;\n            margin: 0 auto;\n            background-color: #ffffff;\n            border-radius: 10px;\n            overflow: hidden;\n            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);\n            transition: transform 0.3s ease, box-shadow 0.3s ease;\n        }\n        .notification-body:hover {\n            transform: translateY(-5px);\n            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);\n        }\n        .header-image {\n            width: 100%;\n            height: auto;\n        }\n        .content {\n            padding: 30px;\n        }\n        h1 {\n            color: #0071cd;\n            text-align: center;\n            margin-bottom: 20px;\n            font-weight: 700;\n            font-size: 24px;\n        }\n        p {\n            font-size: 16px;\n            line-height: 1.5;\n        }\n        .status-table {\n            width: 100%;\n            border-collapse: collapse;\n            margin-bottom: 20px;\n        }\n        .status-table th, .status-table td {\n            padding: 15px;\n            text-align: left;\n            border-bottom: 1px solid #e0e0e0;\n        }\n        .status-table th {\n            background-color: #034b94;\n            color: white;\n            font-weight: 500;\n        }\n        .status-table td {\n            background-color: #f9f9f9;\n        }\n        .footer {\n            text-align: center;\n            padding: 20px;\n            background-color: #f9f9f9;\n            border-top: 1px solid #e0e0e0;\n        }\n        .footer p {\n            margin: 5px 0;\n        }\n        a {\n            color: #0071cd;\n            text-decoration: none;\n            transition: color 0.3s ease;\n        }\n        a:hover {\n            color: #034b94;\n            text-decoration: underline;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"notification-body\">\n        <img src=\"https://raw.githubusercontent.com/lyoh001/AzureWebApps/main/static/images/cenitex.jpg\" alt=\"Header Image\" class=\"header-image\">\n        <div class=\"content\">\n            <h1>AC Guest Wi-Fi Registration Code</h1>\n            <p><strong>Workflow Details:</strong></p>\n            <table class=\"status-table\">\n                <tr>\n                    <th>New Code</th>\n                    <td>@{triggerBody()?['password']}</td>\n                </tr>\n                <tr>\n                    <th>Date</th>\n                    <td>@{triggerBody()?['date']}</td>\n                </tr>\n            </table>\n        </div>\n        <div class=\"footer\">\n            <p><strong>Cenitex</strong></p>\n        </div>\n    </div>\n</body>\n</html>"
+                },
+                "runAfter": {
+                    "Initialize_variable": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "SetVariable"
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "defaultValue": {},
+                "type": "Object"
+            }
+        },
+        "triggers": {
+            "manual": {
+                "inputs": {
+                    "method": "POST"
+                },
+                "kind": "Http",
+                "type": "Request"
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "value": {
+                "office365": {
+                    "connectionId": "",
+                    "connectionName": "",
+                    "id": ""
+                }
+            }
+        }
+    }
+}
