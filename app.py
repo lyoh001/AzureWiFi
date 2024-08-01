@@ -135,7 +135,7 @@ payload["SponsoredGuestPortal"]["settings"]["selfRegPageSettings"][
     "registrationCode"
 ] = wifi_code
 ip = extract_ip_address(subprocess.check_output("ipconfig").decode("utf-8"))
-url = ISE_URLS[0] if ip.startswith("10.61") else ISE_URLS[1]
+url = ISE_URLS[0] if ip.startswith("10.61") else ISE_URLS[0]
 
 print(DASH_LINE)
 print(f"The hybrid worker node IP: {ip}")
