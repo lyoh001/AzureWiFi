@@ -101,11 +101,7 @@ def send_email(message):
 def connect_to_ise(url):
     print("Checking connection to ISE")
     try:
-        response = requests.get(
-            url=url,
-            headers=HEADERS,
-            verify=False,
-        )
+        response = requests.get(url=url, headers=HEADERS, verify=False)
         response.raise_for_status()
         return response.status_code
     except requests.exceptions.RequestException as e:
@@ -115,13 +111,8 @@ def connect_to_ise(url):
 
 def change_password(url, payload):
     try:
-        return 200
-        response = requests.put(
-            url=url,
-            headers=HEADERS,
-            json=payload,
-            verify=False,
-        )
+        # return 200
+        response = requests.put(url=url, headers=HEADERS, json=payload, verify=False)
         response.raise_for_status()
         return response.status_code
     except requests.exceptions.RequestException as e:
