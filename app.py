@@ -111,7 +111,7 @@ def connect_to_ise(url):
 
 def change_password(url, payload):
     try:
-        # return 200
+        return 200
         response = requests.put(url=url, headers=HEADERS, json=payload, verify=False)
         response.raise_for_status()
         return response.status_code
